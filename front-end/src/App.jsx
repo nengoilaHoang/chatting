@@ -5,8 +5,8 @@ import IntroductionPage from './components/homeComponents/introduction/introduct
 import LoginPage from './pages/login/login';
 import RegisterPage from './pages/register/register';
 import MainLayout from './layouts/mainLayout/mainLayout';
+import ChattingPage from './pages/chatting/chatting';
 
-const ChatPage = () => <h2>Giao diện Chat Chính</h2>;
 const ProfilePage = () => <h2>Thông tin cá nhân</h2>;
 const NotFoundPage = () => <h2>404 - Không tìm thấy trang</h2>;
 
@@ -29,7 +29,7 @@ function App() {
         </Route>
 
         <Route element={<MainLayout />}>
-          <Route path="/chatting" element={<IntroductionPage />} /> 
+          <Route path="/chatting" element={<ChattingPage />} /> 
         </Route>
 
         <Route element={<ProtectedRoute />}>

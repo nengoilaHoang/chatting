@@ -1,0 +1,70 @@
+/* --- USER ITEM --- */
+.c-user-wrapper {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background-color: var(--white);
+    margin-bottom: 8px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.c-user-wrapper:hover {
+    border-color: rgba(0, 122, 255, 0.2);
+    background-color: #F8FAFF;
+    transform: scale(1.01);
+}
+
+.c-user-avatar-box {
+    margin-right: 12px;
+}
+
+.c-user-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px; /* Bo góc vuông mềm (Squircle) để khác với ChatBox tròn */
+    object-fit: cover;
+}
+
+.c-user-info {
+    flex: 1;
+}
+
+.c-user-name {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.c-user-status {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.c-user-status.online {
+    color: #34C759; /* Xanh lá */
+    font-weight: 500;
+}
+
+/* Nút hành động nhanh */
+.c-user-btn-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background-color: #F0F2F5;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.c-user-btn-icon:hover {
+    background-color: var(--primary-color);
+    color: white;
+}

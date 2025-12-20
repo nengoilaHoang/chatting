@@ -110,6 +110,7 @@ body {
     justify-content: center;
     align-items: center; /* Căn giữa nội dung login/register form */
     padding: 40px 20px;
+    width: 100%;
 }
 
 /* --- FOOTER STYLES --- */
