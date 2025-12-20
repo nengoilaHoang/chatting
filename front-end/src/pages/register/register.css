@@ -1,0 +1,247 @@
+/* --- CONTAINER --- */
+.p-register-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-color);
+    position: relative;
+    overflow: hidden;
+    padding: 20px;
+}
+
+/* Bong bóng trang trí (Reuse logic nhưng đổi tên class) */
+.p-register-bubble {
+    position: absolute;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(0, 122, 255, 0.1), rgba(0, 122, 255, 0.05));
+    animation: floatBubbleReg 12s infinite ease-in-out;
+    z-index: 0;
+}
+
+.p-register-bubble-1 { width: 350px; height: 350px; top: -100px; right: -50px; }
+.p-register-bubble-2 { width: 150px; height: 150px; bottom: 50px; left: 50px; animation-delay: 3s; }
+
+@keyframes floatBubbleReg {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-30px) scale(1.05); }
+}
+
+/* --- CARD --- */
+.p-register-card {
+    background: var(--white);
+    width: 100%;
+    max-width: 950px;
+    /* Không set height cố định để nó tự dãn theo nội dung form */
+    min-height: 600px; 
+    border-radius: 32px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+/* --- LEFT SIDE: BRAND --- */
+.p-register-brand {
+    flex: 1;
+    background: linear-gradient(160deg, #005ec4 0%, var(--primary-color) 100%);
+    color: var(--white);
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+.p-register-logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 40px;
+    opacity: 0.9;
+    letter-spacing: -0.5px;
+}
+
+.p-register-brand h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 20px;
+}
+
+.p-register-brand p {
+    font-size: 1rem;
+    opacity: 0.85;
+    line-height: 1.6;
+    max-width: 320px;
+}
+
+/* Minh họa cái khiên (Shield) */
+.p-register-illustration {
+    margin-top: 50px;
+    position: relative;
+    height: 120px;
+}
+
+.p-register-shield-icon {
+    font-size: 4rem;
+    position: absolute;
+    top: 0;
+    left: 20px;
+    animation: pulseShield 3s infinite;
+    filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2));
+}
+
+.p-register-lock-icon {
+    font-size: 2rem;
+    position: absolute;
+    top: 50px;
+    left: 80px;
+    animation: floatLock 3s infinite ease-in-out;
+}
+
+@keyframes pulseShield {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes floatLock {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* --- RIGHT SIDE: FORM --- */
+.p-register-form-wrapper {
+    flex: 1.2; /* Cho phần form rộng hơn chút vì nhiều field */
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.p-register-header {
+    margin-bottom: 30px;
+}
+
+.p-register-header h2 {
+    font-size: 2rem;
+    color: var(--text-main);
+    margin-bottom: 8px;
+}
+
+.p-register-header p {
+    color: var(--text-muted);
+}
+
+/* Error Message Box */
+.p-register-error {
+    background-color: #FFF2F2;
+    color: var(--error-color);
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    border-left: 4px solid var(--error-color);
+    font-weight: 500;
+}
+
+/* Form Styles */
+.p-register-group {
+    margin-bottom: 18px;
+}
+
+.p-register-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 6px;
+}
+
+.p-register-group input {
+    width: 100%;
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: 2px solid #F0F0F5;
+    background-color: #F9F9FC;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.p-register-group input:focus {
+    border-color: var(--primary-color);
+    background-color: var(--white);
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+}
+
+/* Layout 2 cột cho Password & Confirm Pass */
+.p-register-row {
+    display: flex;
+    gap: 15px;
+}
+
+.p-register-row .p-register-group {
+    flex: 1;
+}
+
+/* Button */
+.p-register-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
+    margin-top: 10px;
+}
+
+.p-register-btn:hover:not(:disabled) {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 122, 255, 0.4);
+}
+
+.p-register-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.p-register-footer {
+    text-align: center;
+    margin-top: 25px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.p-register-footer a {
+    color: var(--primary-color);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+/* Mobile Responsive */
+@media (max-width: 900px) {
+    .p-register-card {
+        flex-direction: column;
+        max-width: 500px;
+    }
+
+    .p-register-brand {
+        display: none; /* Ẩn phần trang trí trên mobile */
+    }
+
+    .p-register-form-wrapper {
+        padding: 40px 25px;
+    }
+    
+    .p-register-row {
+        flex-direction: column; /* Password xuống dòng trên mobile */
+        gap: 0;
+    }
+}

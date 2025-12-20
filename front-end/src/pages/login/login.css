@@ -1,0 +1,239 @@
+/* --- CONTAINER & BACKGROUND --- */
+.p-login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-color);
+    position: relative;
+    overflow: hidden; /* Để bong bóng không bị tràn scroll */
+    padding: 20px;
+}
+
+/* Bong bóng trang trí (Animation) */
+.p-login-bubble {
+    position: absolute;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(0, 122, 255, 0.1), rgba(0, 122, 255, 0.05));
+    animation: floatBubble 10s infinite ease-in-out;
+    z-index: 0;
+}
+
+.p-login-bubble-1 { width: 300px; height: 300px; top: -50px; left: -100px; animation-delay: 0s; }
+.p-login-bubble-2 { width: 200px; height: 200px; bottom: 50px; right: -50px; animation-delay: 2s; }
+.p-login-bubble-3 { width: 100px; height: 100px; top: 40%; right: 20%; animation-delay: 4s; }
+
+@keyframes floatBubble {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-20px) scale(1.05); }
+}
+
+/* --- MAIN CARD --- */
+.p-login-card {
+    background: var(--white);
+    width: 100%;
+    max-width: 900px;
+    height: 600px; /* Chiều cao cố định cho đẹp trên desktop */
+    border-radius: 32px; /* Bo góc cực lớn -> Friendly */
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+/* --- LEFT SIDE: WELCOME --- */
+.p-login-welcome {
+    flex: 1;
+    background: linear-gradient(135deg, var(--primary-color) 0%, #005ec4 100%);
+    color: var(--white);
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+.p-login-logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 40px;
+    opacity: 0.9;
+}
+
+.p-login-welcome h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.p-login-welcome p {
+    font-size: 1rem;
+    opacity: 0.8;
+    line-height: 1.6;
+    max-width: 300px;
+}
+
+/* Minh họa giả lập bong bóng chat */
+.p-login-illustration {
+    margin-top: 60px;
+    position: relative;
+    height: 100px;
+}
+
+.p-login-chat-icon {
+    font-size: 2rem;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%; /* Tròn xoe */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    animation: bounce 3s infinite;
+}
+
+.p-login-chat-icon-r {
+    top: 20px;
+    left: 50px;
+    background: rgba(255, 255, 255, 0.9); /* Màu trắng đục */
+    animation: bounce 3s infinite 1.5s; /* Delay cho lệch nhịp */
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* --- RIGHT SIDE: FORM --- */
+.p-login-form-wrapper {
+    flex: 1;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.p-login-header h2 {
+    font-size: 2rem;
+    color: var(--text-main);
+    margin-bottom: 10px;
+}
+
+.p-login-header p {
+    color: var(--text-muted);
+    margin-bottom: 40px;
+}
+
+.p-login-group {
+    margin-bottom: 20px;
+}
+
+.p-login-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 8px;
+}
+
+.p-login-group input {
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 12px; /* Input bo góc vừa phải */
+    border: 2px solid #F0F0F5;
+    background-color: #F9F9FC;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.p-login-group input:focus {
+    border-color: var(--primary-color);
+    background-color: var(--white);
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+}
+
+.p-login-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    font-size: 0.9rem;
+}
+
+.p-login-remember {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.p-login-actions a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Button Styling */
+.p-login-btn {
+    width: 100%;
+    padding: 16px;
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: 50px; /* Nút hình viên thuốc */
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
+}
+
+.p-login-btn:hover:not(:disabled) {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 122, 255, 0.4);
+}
+
+.p-login-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.p-login-footer {
+    text-align: center;
+    margin-top: 30px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.p-login-footer a {
+    color: var(--primary-color);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+/* --- RESPONSIVE MOBILE --- */
+@media (max-width: 900px) {
+    .p-login-card {
+        flex-direction: column;
+        height: auto;
+        max-width: 500px;
+    }
+
+    .p-login-welcome {
+        display: none; /* Ẩn phần trang trí trên mobile cho gọn */
+        /* Hoặc để padding thấp hơn nếu muốn hiện: padding: 30px; */
+    }
+
+    .p-login-form-wrapper {
+        padding: 40px 30px;
+    }
+}
