@@ -1,27 +1,14 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import AuthLayout from './layouts/authLayout';
+import AuthLayout from './layouts/authLayout/authLayout';
 import IntroductionPage from './components/homeComponents/introduction/introduction';
 import LoginPage from './pages/login/login';
 import RegisterPage from './pages/register/register';
+import MainLayout from './layouts/mainLayout/mainLayout';
 
 const ChatPage = () => <h2>Giao diện Chat Chính</h2>;
 const ProfilePage = () => <h2>Thông tin cá nhân</h2>;
 const NotFoundPage = () => <h2>404 - Không tìm thấy trang</h2>;
-
-const MainLayout = () => {
-  return (
-    <div className="main-layout" style={{ display: 'flex', height: '100vh' }}>
-      <aside style={{ width: 250, background: '#333', color: 'white' }}>
-        Sidebar (Menu/List Chat)
-      </aside>
-      <main style={{ flex: 1, background: '#fff' }}>
-        <header style={{ height: 60, borderBottom: '1px solid #ddd' }}>Header</header>
-        <Outlet /> 
-      </main>
-    </div>
-  );
-};
 
 const ProtectedRoute = () => {
   const token = localStorage.getItem('accessToken');
@@ -39,6 +26,10 @@ function App() {
           <Route path="/" element={<IntroductionPage />} /> 
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+        </Route>
+
+        <Route element={<MainLayout />}>
+          <Route path="/chatting" element={<IntroductionPage />} /> 
         </Route>
 
         <Route element={<ProtectedRoute />}>
