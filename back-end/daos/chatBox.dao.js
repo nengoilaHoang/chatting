@@ -12,6 +12,9 @@ export default class chatBoxDao {
             type: chatBox.type
         });
     }
+    async deleteChatBox(chatBoxId) {
+        return await db(this.tableName).where({ id: chatBoxId }).del();
+    }
     async createChatMember(chatBoxId, userId, role) {
         return await db(this.chatMember).insert({
             chat_box_id: chatBoxId,
