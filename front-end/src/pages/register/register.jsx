@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './register.css';
+import { authService } from '../../services/authService';
 
 const RegisterPage = () => {
     const navigate = useNavigate();
@@ -40,21 +41,20 @@ const RegisterPage = () => {
         }
 
         setIsLoading(true);
+        setError('');
 
         try {
-            // --- GIẢ LẬP GỌI API ---
-            console.log("Dữ liệu đăng ký:", formData);
-            
-            // const res = await api.register(formData);
+            await authService.register({
+                displayName: formData.displayName,
+                email: formData.email,
+                password: formData.password,
+            });
 
-            setTimeout(() => {
-                setIsLoading(false);
-                alert("Đăng ký thành công! Hãy đăng nhập.");
-                navigate('/login'); 
-            }, 1500);
-
+            alert("Đăng ký thành công! Hãy đăng nhập.");
+            navigate('/login'); 
         } catch (err) {
-            setError("Đăng ký thất bại. Email có thể đã tồn tại.");
+            setError(err.message ?? "Đăng ký thất bại. Vui lòng thử lại.");
+        } finally {
             setIsLoading(false);
         }
     };

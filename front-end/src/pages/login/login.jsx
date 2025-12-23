@@ -1,34 +1,32 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './login.css';
+import { authService } from '../../services/authService';
 
 const LoginPage = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
 
     const handleLogin = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+        setError('');
 
         try {
-            // --- GIẢ LẬP LOGIC LOGIN ---
-            console.log("Đang đăng nhập...", email, password);
-            
-            // Ví dụ gọi API: const res = await api.login(email, password);
-            
-            // Giả lập delay 1 xíu cho user thấy hiệu ứng loading
-            setTimeout(() => {
-                // Sau khi có token:
-                // localStorage.setItem('accessToken', 'token_fake');
-                // socketService.connect('token_fake');
-                setIsLoading(false);
-                navigate('/'); // Chuyển về trang chat
-            }, 1500);
-
+            const data = await authService.login({ email, password });
+            if (data?.account) {
+                localStorage.setItem('userProfile', JSON.stringify(data.account));
+                if (data.account.displayName || data.account.email) {
+                    localStorage.setItem('displayName', data.account.displayName ?? data.account.email);
+                }
+            }
+            navigate('/');
         } catch (error) {
-            alert("Đăng nhập thất bại");
+            setError(error.message ?? 'Đăng nhập thất bại. Vui lòng thử lại.');
+        } finally {
             setIsLoading(false);
         }
     };
@@ -64,6 +62,11 @@ const LoginPage = () => {
                     </div>
 
                     <form className="p-login-form" onSubmit={handleLogin}>
+                        {error && (
+                            <div className="p-login-error">
+                                {error}
+                            </div>
+                        )}
                         {/* Input Email */}
                         <div className="p-login-group">
                             <label htmlFor="email">Email</label>

@@ -1,5 +1,6 @@
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import './mainLayout.css';
+import { authService } from '../../services/authService';
 
 export default function MainLayout() {
     const navigate = useNavigate();
@@ -28,15 +29,21 @@ export default function MainLayout() {
         return 'DisplayName';
     })();
 
-    const handleLogout = () => {
-        if (typeof window !== 'undefined') {
-            ['accessToken', 'refreshToken', 'userProfile', 'displayName'].forEach((key) => {
-                localStorage.removeItem(key);
-                sessionStorage.removeItem(key);
-            });
-        }
+    const handleLogout = async () => {
+        try {
+            await authService.logout();
+        } catch (error) {
+            console.warn('Logout request failed', error);
+        } finally {
+            if (typeof window !== 'undefined') {
+                ['accessToken', 'refreshToken', 'userProfile', 'displayName'].forEach((key) => {
+                    localStorage.removeItem(key);
+                    sessionStorage.removeItem(key);
+                });
+            }
 
-        navigate('/login', { replace: true });
+            navigate('/login', { replace: true });
+        }
     };
 
     return (

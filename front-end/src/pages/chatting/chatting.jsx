@@ -1,50 +1,96 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Chatbox from '../../components/chatComponents/chatbox/chatbox.jsx';
 import User from '../../components/chatComponents/user/user.jsx';
 import './chatting.css';
 
-const MOCK_CHATS = [
-  { id: 1, name: "Team An Toàn Thông Tin", avatar: "https://ui-avatars.com/api/?name=Team+A&background=007AFF&color=fff", lastMessage: "Mọi người nộp báo cáo chưa?", unread: 5, time: "10:30" },
-  { id: 2, name: "Crush 🥰", avatar: "https://i.pravatar.cc/150?img=5", lastMessage: "Tối nay rảnh không đi cafe?", unread: 1, time: "09:15" },
-  { id: 3, name: "Hội code dạo", avatar: "https://ui-avatars.com/api/?name=Code+Dao&background=FF9500&color=fff", lastMessage: "Bug này lạ quá anh em ơi", unread: 0, time: "Hôm qua" },
-  { id: 4, name: "Sếp Tùng", avatar: "https://i.pravatar.cc/150?img=11", lastMessage: "Deadline đẩy lên sớm nhé", unread: 0, time: "Hôm qua" },
-  { id: 5, name: "Nhóm đi phượt", avatar: "https://i.pravatar.cc/150?img=60", lastMessage: "Chốt Đà Lạt nhé", unread: 2, time: "12/10" },
-  { id: 6, name: "Bạn thân", avatar: "https://i.pravatar.cc/150?img=32", lastMessage: "Mày xem cái này chưa haha", unread: 0, time: "11/10" },
-  { id: 7, name: "Gia đình", avatar: "https://ui-avatars.com/api/?name=Family&background=34C759&color=fff", lastMessage: "Về ăn cơm con ơi", unread: 0, time: "10/10" },
+// --- 1. MODEL DEFINITION ---
+class ChatBoxModel {
+    constructor({ id, name, type, avatar, lastMessage, unread, createdAt, updatedAt }) {
+        this.id = id;
+        this.name = name;
+        this.type = type; // 'group' | 'private'
+        this.avatar = avatar;
+        this.lastMessage = lastMessage;
+        this.unread = unread;
+        this.createdAt = new Date(createdAt).toLocaleDateString();
+        this.updatedAt = new Date(updatedAt).toLocaleDateString();
+    }
+}
+
+// --- 2. UPDATED MOCK DATA ---
+const RAW_CHATS = [
+    { id: 1, name: "Team An Toàn Thông Tin", type: "group", avatar: "https://ui-avatars.com/api/?name=Team+A&background=007AFF&color=fff", lastMessage: "Mọi người nộp báo cáo chưa?", unread: 5, createdAt: "2023-01-01", updatedAt: "2023-10-24" },
+    { id: 2, name: "Crush 🥰", type: "private", avatar: "https://i.pravatar.cc/150?img=5", lastMessage: "Tối nay rảnh không đi cafe?", unread: 1, createdAt: "2023-05-12", updatedAt: "2023-10-24" },
+    { id: 3, name: "Hội code dạo", type: "group", avatar: "https://ui-avatars.com/api/?name=Code+Dao&background=FF9500&color=fff", lastMessage: "Bug này lạ quá anh em ơi", unread: 0, createdAt: "2023-03-10", updatedAt: "2023-10-23" },
+    { id: 4, name: "Sếp Tùng", type: "private", avatar: "https://i.pravatar.cc/150?img=11", lastMessage: "Deadline đẩy lên sớm nhé", unread: 0, createdAt: "2023-08-20", updatedAt: "2023-10-23" },
+    { id: 5, name: "Nhóm đi phượt", type: "group", avatar: "https://i.pravatar.cc/150?img=60", lastMessage: "Chốt Đà Lạt nhé", unread: 2, createdAt: "2023-09-01", updatedAt: "2023-10-22" },
+    { id: 6, name: "Nhóm đi phượt", type: "group", avatar: "https://i.pravatar.cc/150?img=60", lastMessage: "Chốt Đà Lạt nhé", unread: 2, createdAt: "2023-09-01", updatedAt: "2023-10-22" },
+    { id: 7, name: "Nhóm đi phượt", type: "group", avatar: "https://i.pravatar.cc/150?img=60", lastMessage: "Chốt Đà Lạt nhé", unread: 2, createdAt: "2023-09-01", updatedAt: "2023-10-22" },
+    { id: 8, name: "Nhóm đi phượt", type: "group", avatar: "https://i.pravatar.cc/150?img=60", lastMessage: "Chốt Đà Lạt nhé", unread: 2, createdAt: "2023-09-01", updatedAt: "2023-10-22" },
+    { id: 9, name: "Nhóm đi phượt", type: "group", avatar: "https://i.pravatar.cc/150?img=60", lastMessage: "Chốt Đà Lạt nhé", unread: 2, createdAt: "2023-09-01", updatedAt: "2023-10-22" },
 ];
+
+const MOCK_CHATS = RAW_CHATS.map(data => new ChatBoxModel(data));
+
 const MOCK_USERS = [
-  { id: 101, displayName: "Nguyễn Văn A", avatar: "https://i.pravatar.cc/150?img=12", isOnline: true },
-  { id: 102, displayName: "Trần Thị B", avatar: "https://i.pravatar.cc/150?img=9", isOnline: true },
-  { id: 103, displayName: "Lê Văn C", avatar: "https://i.pravatar.cc/150?img=3", isOnline: false },
-  { id: 104, displayName: "Hacker Mũ Trắng", avatar: "https://i.pravatar.cc/150?img=68", isOnline: true },
+    { id: 101, displayName: "Nguyễn Văn A", avatar: "https://i.pravatar.cc/150?img=12", isOnline: true },
+    { id: 102, displayName: "Trần Thị B", avatar: "https://i.pravatar.cc/150?img=9", isOnline: true },
+    { id: 103, displayName: "Lê Văn C", avatar: "https://i.pravatar.cc/150?img=3", isOnline: false },
+    { id: 104, displayName: "Hacker Mũ Trắng", avatar: "https://i.pravatar.cc/150?img=68", isOnline: true },
 ];
+
 const MOCK_MESSAGES = [
-  { id: 1, senderId: 'me', content: "Alo, nghe rõ không bạn ơi?", time: "10:00", type: "text" },
-  { id: 2, senderId: 'other', content: "Nghe rõ nha, web xịn thế!", time: "10:01", type: "text" },
-  { id: 3, senderId: 'other', content: "Giao diện này nhìn Playful thực sự lun á 😍", time: "10:02", type: "text" },
-  { id: 4, senderId: 'me', content: "Hehe, đang làm đồ án ATTT mà lị.", time: "10:03", type: "text" },
-  { id: 5, senderId: 'me', content: "Có mã hóa End-to-End các kiểu đà điểu.", time: "10:03", type: "text" },
+    { id: 1, senderId: 'me', content: "Alo, nghe rõ không bạn ơi?", time: "10:00", type: "text" },
+    { id: 2, senderId: 'other', content: "Nghe rõ nha, web xịn thế!", time: "10:01", type: "text" },
+    { id: 3, senderId: 'other', content: "Giao diện này nhìn Playful thực sự lun á 😍", time: "10:02", type: "text" },
+    { id: 4, senderId: 'me', content: "Hehe, đang làm đồ án ATTT mà lị.", time: "10:03", type: "text" },
+    { id: 5, senderId: 'me', content: "Có mã hóa End-to-End các kiểu đà điểu.", time: "10:03", type: "text" },
 ];
 
 const ChatPage = () => {
-    const [tab, setTab] = useState('chat'); // 'chat' hoặc 'user'
+    const [tab, setTab] = useState('chat');
     const [searchText, setSearchText] = useState('');
     const [selectedChat, setSelectedChat] = useState(null);
     const [messageInput, setMessageInput] = useState('');
+    
+    // State cho Dropdown Setting
+    const [showGroupSettings, setShowGroupSettings] = useState(false);
+    const dropdownRef = useRef(null);
 
-    // Lọc dữ liệu theo Search Text
+    // Xử lý click outside để đóng dropdown
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setShowGroupSettings(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    // Reset dropdown khi đổi chat
+    useEffect(() => {
+        setShowGroupSettings(false);
+    }, [selectedChat]);
+
     const filteredChats = MOCK_CHATS.filter(c => c.name.toLowerCase().includes(searchText.toLowerCase()));
     const filteredUsers = MOCK_USERS.filter(u => u.displayName.toLowerCase().includes(searchText.toLowerCase()));
+
+    const handleSettingClick = () => {
+        if (selectedChat?.type === 'group') {
+            setShowGroupSettings(!showGroupSettings);
+        } else {
+            alert("Thông tin cá nhân: " + selectedChat.name);
+        }
+    };
 
     return (
         <div className="p-chatting-container">
             
-            {/* --- LEFT BAR: Sidebar --- */}
+            {/* --- LEFT BAR --- */}
             <aside className="p-chatting-leftbar">
-                
-                {/* 1. Header Search & Tabs */}
+                {/* Header Search & Tabs */}
                 <div className="p-chatting-leftbar-header">
-                    {/* Search Box */}
                     <div className="p-chatting-search-wrapper">
                         <span className="p-chatting-search-icon">🔍</span>
                         <input 
@@ -56,7 +102,6 @@ const ChatPage = () => {
                         />
                     </div>
 
-                    {/* Tabs Switcher */}
                     <div className="p-chatting-tabs-wrapper">
                         <button 
                             className={`p-chatting-tab-btn ${tab === 'chat' ? 'active' : ''}`}
@@ -73,7 +118,7 @@ const ChatPage = () => {
                     </div>
                 </div>
 
-                {/* 2. List Content (Scrollable) */}
+                {/* List Content */}
                 <div className="p-chatting-leftbar-content custom-scroll">
                     {tab === 'chat' ? (
                         <div className="p-chatting-list-group">
@@ -104,22 +149,58 @@ const ChatPage = () => {
             </aside>
 
 
-            {/* --- RIGHT BAR: Chat Window --- */}
+            {/* --- RIGHT BAR --- */}
             <main className="p-chatting-window">
                 {selectedChat ? (
                     <>
-                        {/* A. Chat Header */}
+                        {/* Chat Header */}
                         <header className="p-chatting-window-header">
                             <div className="p-chatting-window-info">
                                 <img src={selectedChat.avatar} alt="" className="p-chatting-window-avatar" />
                                 <div>
                                     <h3 className="p-chatting-window-name">{selectedChat.name}</h3>
-                                    <span className="p-chatting-window-status">Đang hoạt động</span>
+                                    <span className="p-chatting-window-status">
+                                        {selectedChat.type === 'group' ? 'Nhóm trò chuyện' : 'Đang hoạt động'}
+                                    </span>
                                 </div>
+                            </div>
+
+                            <div className="p-chatting-window-actions" ref={dropdownRef}>
+                                <button className="p-chatting-icon-btn">📞</button>
+                                <button className="p-chatting-icon-btn">📹</button>
+                                
+                                {/* Nút Info / Setting */}
+                                <button 
+                                    className="p-chatting-icon-btn" 
+                                    onClick={handleSettingClick}
+                                >
+                                    ℹ️
+                                </button>
+
+                                {/* DROPDOWN MENU CHO GROUP */}
+                                {showGroupSettings && selectedChat.type === 'group' && (
+                                    <div className="p-chatting-dropdown">
+                                        <div className="p-chatting-dropdown-item">
+                                            ✏️ Đổi tên nhóm
+                                        </div>
+                                        <div className="p-chatting-dropdown-item">
+                                            🖼️ Đổi ảnh nhóm
+                                        </div>
+                                        <div className="p-chatting-dropdown-item">
+                                            👥 Xem thành viên
+                                        </div>
+                                        <div className="p-chatting-dropdown-item">
+                                            ➕ Thêm thành viên
+                                        </div>
+                                        <div className="p-chatting-dropdown-item danger">
+                                            🚪 Rời nhóm
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </header>
 
-                        {/* B. Message List */}
+                        {/* Message List */}
                         <div className="p-chatting-window-messages custom-scroll">
                             {MOCK_MESSAGES.map((msg) => (
                                 <div 
@@ -138,7 +219,7 @@ const ChatPage = () => {
                             ))}
                         </div>
 
-                        {/* C. Input Area */}
+                        {/* Input Area */}
                         <div className="p-chatting-input-area">
                             <button className="p-chatting-attach-btn">📎</button>
                             <input 
@@ -149,13 +230,11 @@ const ChatPage = () => {
                                 onChange={(e) => setMessageInput(e.target.value)}
                                 onKeyPress={(e) => e.key === 'Enter' && alert("Gửi: " + messageInput)}
                             />
-                            <button className="p-chatting-send-btn">
-                                ➤
-                            </button>
+                            <button className="p-chatting-send-btn">➤</button>
                         </div>
                     </>
                 ) : (
-                    /* D. Empty State (Chưa chọn chat) */
+                    /* Empty State */
                     <div className="p-chatting-empty-state">
                         <div className="p-chatting-empty-img">🚀</div>
                         <h2>Chào mừng đến với SecureChat</h2>

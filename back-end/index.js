@@ -12,8 +12,22 @@ const PORT = process.env.PORT || 5000;
 const pgConnection = new Database();
 const server = http.createServer(app);
 
+const allowedOrigins = (process.env.CLIENT_URLS || 'http://localhost:5137,http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, origin);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+}));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -35,8 +49,9 @@ app.use('/api/messages', messageRouter);
 // Khởi tạo Socket.io
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5137",
-    methods: ['GET', 'POST']
+    origin: allowedOrigins,
+    methods: ['GET', 'POST'],
+    credentials: true,
   }
 });
 

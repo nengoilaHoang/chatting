@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './adminLogin.css';
+import { authService } from '../../services/authService';
 
 const AdminLoginPage = () => {
     const navigate = useNavigate();
@@ -13,24 +14,22 @@ const AdminLoginPage = () => {
         setError(''); // Xóa lỗi khi user nhập lại
     };
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+        setError('');
 
-        // --- GIẢ LẬP LOGIC LOGIN ADMIN ---
-        // Admin thường có API endpoint riêng, ví dụ: /api/admin/login
-        console.log("Admin Login:", credentials);
-
-        setTimeout(() => {
-            // Logic check demo
-            if (credentials.email === 'admin@securechat.com' && credentials.password === 'admin123') {
-                setIsLoading(false);
-                navigate('/admin/dashboard'); // Chuyển hướng vào trang Dashboard
-            } else {
-                setError('Thông tin đăng nhập không chính xác hoặc bạn không có quyền truy cập.');
-                setIsLoading(false);
+        try {
+            const data = await authService.adminLogin(credentials);
+            if (data?.adminAccount) {
+                localStorage.setItem('adminProfile', JSON.stringify(data.adminAccount));
             }
-        }, 1500);
+            navigate('/admin/dashboard');
+        } catch (error) {
+            setError(error.message ?? 'Đăng nhập thất bại. Vui lòng thử lại.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (

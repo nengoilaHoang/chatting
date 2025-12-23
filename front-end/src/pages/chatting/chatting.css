@@ -1,10 +1,14 @@
 /* --- LAYOUT CHÍNH --- */
 .p-chatting-container {
     display: flex;
-    height: 100vh; /* Full màn hình */
+    /* FIX: Trừ đi chiều cao Header (70px) và Footer (khoảng 60-80px) của MainLayout */
+    /* Điều này đảm bảo trang chat nằm lọt thỏm ở giữa, không gây scroll cho cả trang web */
+    height: calc(100vh - 140px); 
     width: 100%;
     background-color: var(--bg-color);
-    overflow: hidden; /* Chặn scroll của cả body */
+    overflow: hidden; /* Chặn scroll trôi ra ngoài */
+    border-radius: 12px; /* Bo góc nhẹ cho khung chat đẹp hơn khi nằm trong layout */
+    border: 1px solid rgba(0,0,0,0.05);
 }
 
 /* --- LEFT SIDEBAR (360px) --- */
@@ -85,7 +89,7 @@
 /* Scroll Content */
 .p-chatting-leftbar-content {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: auto; /* Chỉ scroll vùng này */
     padding: 10px 0;
 }
 
@@ -103,7 +107,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    background-color: #F5F7FB; /* Nền xám nhạt cho vùng chat */
+    background-color: #F5F7FB;
     position: relative;
 }
 
@@ -148,6 +152,7 @@
 .p-chatting-window-actions {
     display: flex;
     gap: 8px;
+    position: relative; /* Để định vị Dropdown */
 }
 
 .p-chatting-icon-btn {
@@ -169,10 +174,54 @@
     background-color: #F2F2F7;
 }
 
+/* Dropdown Menu Style */
+.p-chatting-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: var(--white);
+    min-width: 200px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    padding: 8px;
+    z-index: 100;
+    border: 1px solid rgba(0,0,0,0.05);
+    animation: fadeIn 0.2s ease;
+}
+
+.p-chatting-dropdown-item {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.2s;
+}
+
+.p-chatting-dropdown-item:hover {
+    background-color: #F2F2F7;
+    color: var(--primary-color);
+}
+
+.p-chatting-dropdown-item.danger {
+    color: #FF3B30;
+}
+.p-chatting-dropdown-item.danger:hover {
+    background-color: #FFF2F2;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 /* Message List Area */
 .p-chatting-window-messages {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: auto; /* Scroll nội dung tin nhắn */
     padding: 20px 30px;
     display: flex;
     flex-direction: column;
@@ -213,14 +262,12 @@
     box-shadow: 0 2px 5px rgba(0,0,0,0.03);
 }
 
-/* Bubble màu người gửi (Mình) */
 .p-chatting-row-me .p-chatting-message-bubble {
     background-color: var(--primary-color);
     color: white;
     border-bottom-right-radius: 4px;
 }
 
-/* Bubble màu người nhận (Họ) */
 .p-chatting-row-other .p-chatting-message-bubble {
     background-color: var(--white);
     color: var(--text-main);
