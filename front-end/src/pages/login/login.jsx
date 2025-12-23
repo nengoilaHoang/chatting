@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './login.css';
-// import socketService from '../services/socketService'; // Import service của bạn
 
 const LoginPage = () => {
     const navigate = useNavigate();

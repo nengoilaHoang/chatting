@@ -1,7 +1,44 @@
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, useNavigate } from 'react-router-dom';
 import './mainLayout.css';
 
 export default function MainLayout() {
+    const navigate = useNavigate();
+
+    const displayName = (() => {
+        if (typeof window === 'undefined') {
+            return 'DisplayName';
+        }
+
+        try {
+            const storedProfile = localStorage.getItem('userProfile');
+            if (storedProfile) {
+                const parsed = JSON.parse(storedProfile);
+                if (parsed?.displayName) return parsed.displayName;
+                if (parsed?.fullName) return parsed.fullName;
+            }
+        } catch (error) {
+            // Ignore JSON parse errors and fall back to defaults
+        }
+
+        if (typeof window !== 'undefined') {
+            const storedName = localStorage.getItem('displayName');
+            if (storedName) return storedName;
+        }
+
+        return 'DisplayName';
+    })();
+
+    const handleLogout = () => {
+        if (typeof window !== 'undefined') {
+            ['accessToken', 'refreshToken', 'userProfile', 'displayName'].forEach((key) => {
+                localStorage.removeItem(key);
+                sessionStorage.removeItem(key);
+            });
+        }
+
+        navigate('/login', { replace: true });
+    };
+
     return (
         <div className="mainlayout-container">
             {/* --- HEADER --- */}
@@ -21,8 +58,11 @@ export default function MainLayout() {
                     </Link>
 
                     {/* Nút bấm bên phải */}
-                    <div className="mainlayout-main-actions">
-                        <span className="mainlayout-logo-text">Xin Chào DisplayName</span>
+                    <div className="mainlayout-main-actions main-layout-actions">
+                        <span className="main-layout-user-greeting">Xin chào {displayName}</span>
+                        <button type="button" className="main-layout-logout-btn" onClick={handleLogout}>
+                            Đăng xuất
+                        </button>
                     </div>
                 </div>
             </header>

@@ -6,6 +6,7 @@ import LoginPage from './pages/login/login';
 import RegisterPage from './pages/register/register';
 import MainLayout from './layouts/mainLayout/mainLayout';
 import ChattingPage from './pages/chatting/chatting';
+import AdminLoginPage from './pages/adminLogin/adminLogin';
 
 const ProfilePage = () => <h2>Thông tin cá nhân</h2>;
 const NotFoundPage = () => <h2>404 - Không tìm thấy trang</h2>;
@@ -26,6 +27,7 @@ function App() {
           <Route path="/" element={<IntroductionPage />} /> 
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/admin/login" element={<AdminLoginPage />} />
         </Route>
 
         <Route element={<MainLayout />}>
