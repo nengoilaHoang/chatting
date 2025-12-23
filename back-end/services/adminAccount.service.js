@@ -1,4 +1,4 @@
-import adminAccountDao from "../daos/adminAccount.dao";
+import adminAccountDao from "../daos/adminAccount.dao.js";
 import adminAccountModel from "../models/adminAccount.model.js";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";

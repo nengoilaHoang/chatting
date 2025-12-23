@@ -1,4 +1,4 @@
-import chatBoxService from "../services/chatBox.service";
+import chatBoxService from "../services/chatBox.service.js";
 
 export default class chatBoxController {
     constructor() {
@@ -31,7 +31,7 @@ export default class chatBoxController {
         }
     }
     async getAllChatBox(req, res) {
-        const userId = req.params.userId;
+        const {userId} = req.body;
         try {
             const result = await this.chatBoxService.getAllChatBox(userId);
             if (result.success) {

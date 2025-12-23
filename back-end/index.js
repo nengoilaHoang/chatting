@@ -17,8 +17,18 @@ app.use(express.json());
 
 //routes import here
 import accountRoute from './routes/account.route.js';
+import adminAccountRoute from './routes/adminAccount.route.js';
+import chatBoxRoute from './routes/chatBox.route.js';
+import messageRoute from './routes/message.route.js';
 const accountRouter = new accountRoute().router;
+const adminAccountRouter = new adminAccountRoute().router;
+const chatBoxRouter = new chatBoxRoute().router;
+const messageRouter = new messageRoute().router;
+
 app.use('/api/accounts', accountRouter);
+app.use('/api/admins', adminAccountRouter);
+app.use('/api/chatboxes', chatBoxRouter);
+app.use('/api/messages', messageRouter);
 
 // Khởi tạo Socket.io
 const io = new Server(server, {

@@ -1,4 +1,4 @@
-import messageService from "../services/message.service";
+import messageService from "../services/message.service.js";
 
 export default class messageController {
     constructor() {

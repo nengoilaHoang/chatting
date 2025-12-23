@@ -1,4 +1,4 @@
-import adminAccountService from "../services/adminAccount.service";
+import adminAccountService from "../services/adminAccount.service.js";
 
 export default class adminAccountController {
     constructor() {

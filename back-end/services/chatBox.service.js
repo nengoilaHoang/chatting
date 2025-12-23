@@ -1,6 +1,5 @@
-import chatBoxDao from "../daos/chatBox.dao";
+import chatBoxDao from "../daos/chatBox.dao.js";
 import chatBoxModel from "../models/chatBox.model.js";
-import userModel from "../models/user.model.js";
 
 export default class chatBoxService {
     constructor() {
