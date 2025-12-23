@@ -1,6 +1,8 @@
 import accountModel from "../models/account.model.js";
 import accountDao from "../daos/account.dao.js";
 import bcrypt from 'bcrypt';
+import dotenv from "dotenv";
+dotenv.config();
 
 export default class accountService {
     constructor() {
@@ -15,7 +17,8 @@ export default class accountService {
         }
         try {
             await this.accountDao.createAccount(account);
-            return { success: true, message: "Account registered successfully" };   
+            account.password = undefined;
+            return { success: true, message: "Account registered successfully", account: account};   
         } catch (error) {
             return { success: false, message: "Error registering account: " + error.message };
         }
@@ -27,9 +30,10 @@ export default class accountService {
             return { success: false, message: "Account not found" };
         }
         const passwordMatch = await bcrypt.compare(password, account.password);
+        account.password = undefined;
         if (!passwordMatch) {
             return { success: false, message: "Incorrect password or email" };
         }
-        return { success: true, message: "Login successful", account: account };
+        return { success: true, message: "Login successful", account: account};
     }
 }

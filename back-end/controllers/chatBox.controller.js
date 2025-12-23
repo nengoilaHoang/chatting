@@ -4,7 +4,7 @@ export default class chatBoxController {
     constructor() {
         this.chatBoxService = new chatBoxService();
     }
-    async chatNewAccount(req, res) {
+    chatNewAccount = async (req, res) => {
         const { senderId, receiverId } = req.body;
         try {
             const result = await this.chatBoxService.chatNewAccount(senderId, receiverId);
@@ -17,7 +17,7 @@ export default class chatBoxController {
             res.status(500).json({ success: false, message: error.message });
         }
     }
-    async createGroupChat(req, res) {
+    createGroupChat = async (req, res) => {
         const { creatorId, chatBoxName, userIds } = req.body;
         try {
             const result = await this.chatBoxService.createGroupChat(creatorId, chatBoxName, userIds);
@@ -30,7 +30,7 @@ export default class chatBoxController {
             res.status(500).json({ success: false, message: error.message });
         }
     }
-    async getAllChatBox(req, res) {
+    getAllChatBox = async (req, res) => {
         const {userId} = req.body;
         try {
             const result = await this.chatBoxService.getAllChatBox(userId);

@@ -10,5 +10,6 @@ export default class accountRoute {
     configureRoutes() {
         this.router.post('/register', this.accountController.registerAccount);
         this.router.post('/login', this.accountController.loginAccount);
+        this.router.post('/logout', this.accountController.logout);
     }
 }

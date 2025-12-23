@@ -17,10 +17,11 @@ export default class adminAccountService {
         if (!isPasswordValid) {
             throw new Error('Invalid password or email');
         }
-        return new adminAccountModel({
+        const account = new adminAccountModel({
             id: adminAccount.id,
             email: adminAccount.email,
-            password: adminAccount.password
+            password: undefined,
         })
+        return {success: true, message: "Login successful", adminAccount: account};
     }
 }

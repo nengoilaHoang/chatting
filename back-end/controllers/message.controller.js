@@ -4,7 +4,7 @@ export default class messageController {
     constructor() {
         this.messageService = new messageService();
     }
-    async sendMessage(req, res) {
+    sendMessage = async (req, res) => {
         const { chatBoxId, senderId, content } = req.body;
         try {
             const result = await this.messageService.sendMessage(chatBoxId, senderId, content);

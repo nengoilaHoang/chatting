@@ -3,6 +3,7 @@ import Database from './ultil/pgConnection.js';
 import http from 'http';
 import { Server } from 'socket.io';
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 dotenv.config();
 
@@ -14,6 +15,7 @@ const server = http.createServer(app);
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 //routes import here
 import accountRoute from './routes/account.route.js';
