@@ -6,6 +6,7 @@ import './chatting.css';
 import { accountService } from '../../services/accountService';
 import { chatBoxService } from '../../services/chatBoxService';
 import { messageService } from '../../services/messageService';
+import socketService from '../../services/socketService';
 
 const MIN_SEARCH_LENGTH = 2;
 const SEARCH_DELAY = 500;
@@ -171,6 +172,50 @@ const ChatPage = () => {
         return normalized;
     };
 
+    const handleRealtimeMessage = useCallback(({ chatBoxId, chatBox, message }) => {
+        if (!chatBoxId || !message) {
+            return;
+        }
+
+        setMessagesByChatId((prev) => {
+            const existing = prev[chatBoxId] ?? [];
+            if (existing.some((item) => item.id === message.id)) {
+                return prev;
+            }
+            return {
+                ...prev,
+                [chatBoxId]: [...existing, message],
+            };
+        });
+
+        setChatBoxes((prev) => {
+            const existingChat = prev.find((item) => item.id === chatBoxId);
+            const normalized = chatBox
+                ? new ChatBoxModel(chatBox)
+                : existingChat
+                    ? new ChatBoxModel({ ...existingChat })
+                    : null;
+            if (!normalized) {
+                return prev;
+            }
+            normalized.lastMessage = message.content;
+            normalized.updatedAt = message.createdAt;
+            const filtered = prev.filter((item) => item.id !== normalized.id);
+            return [normalized, ...filtered];
+        });
+
+        setSelectedChat((prev) => {
+            if (!prev || prev.id !== chatBoxId) {
+                return prev;
+            }
+            return new ChatBoxModel({
+                ...prev,
+                lastMessage: message.content,
+                updatedAt: message.createdAt,
+            });
+        });
+    }, []);
+
     const fetchMessages = useCallback(async (chatBoxId) => {
         if (!chatBoxId) {
             return;
@@ -202,6 +247,25 @@ const ChatPage = () => {
             fetchMessages(selectedChat.id);
         }
     }, [selectedChat?.id, messagesByChatId, fetchMessages]);
+
+    useEffect(() => {
+        if (!selectedChat?.id) {
+            return undefined;
+        }
+        const chatId = selectedChat.id;
+        socketService.joinChat(chatId);
+        return () => {
+            socketService.leaveChat(chatId);
+        };
+    }, [selectedChat?.id]);
+
+    useEffect(() => {
+        const listener = (payload) => handleRealtimeMessage(payload);
+        socketService.on('new_message', listener);
+        return () => {
+            socketService.off('new_message', listener);
+        };
+    }, [handleRealtimeMessage]);
 
     const filteredChats = useMemo(() => {
         if (tab !== 'chat') {
@@ -275,35 +339,42 @@ const ChatPage = () => {
             }
 
             const data = await messageService.sendMessage(payload);
-            let targetChat = selectedChat;
-            if (data?.chatBox) {
+            let activeChat = selectedChat;
+            if (data?.chatBox && (!selectedChat || selectedChat.id !== data.chatBox.id)) {
                 const normalized = upsertChatBox(data.chatBox);
                 if (normalized) {
-                    targetChat = normalized;
                     setSelectedChat(normalized);
-                }
-            } else {
-                const updated = upsertChatBox({ ...selectedChat, updatedAt: data?.message?.createdAt });
-                if (updated) {
-                    targetChat = updated;
-                    setSelectedChat(updated);
+                    activeChat = normalized;
                 }
             }
 
-            const newMessage = data?.message ?? {
-                id: Date.now(),
-                chatBoxId: targetChat.id,
+            const fallbackMessage = {
+                id: data?.message?.id ?? Date.now(),
+                chatBoxId: data?.message?.chatBoxId ?? activeChat?.id ?? selectedChat.id,
                 senderId: currentUser.id,
-                content: trimmed,
-                createdAt: new Date().toISOString(),
+                content: data?.message?.content ?? trimmed,
+                createdAt: data?.message?.createdAt ?? new Date().toISOString(),
             };
+
             setMessagesByChatId((prev) => {
-                const existing = prev[targetChat.id] ?? [];
+                const targetId = fallbackMessage.chatBoxId;
+                const existing = prev[targetId] ?? [];
+                if (existing.some((msg) => msg.id === fallbackMessage.id)) {
+                    return prev;
+                }
                 return {
                     ...prev,
-                    [targetChat.id]: [...existing, newMessage],
+                    [targetId]: [...existing, fallbackMessage],
                 };
             });
+
+            upsertChatBox({
+                ...(activeChat || {}),
+                id: fallbackMessage.chatBoxId,
+                lastMessage: fallbackMessage.content,
+                updatedAt: fallbackMessage.createdAt,
+            });
+
             setMessageInput('');
         } catch (error) {
             setMessagesError(error.message ?? 'Không thể gửi tin nhắn');

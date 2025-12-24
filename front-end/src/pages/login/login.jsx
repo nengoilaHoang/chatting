@@ -17,6 +17,9 @@ const LoginPage = () => {
 
         try {
             const data = await authService.login({ email, password });
+            if (data?.token) {
+                localStorage.setItem('accessToken', data.token);
+            }
             if (data?.account) {
                 localStorage.setItem('userProfile', JSON.stringify(data.account));
                 if (data.account.displayName || data.account.email) {

@@ -67,6 +67,9 @@ const RegisterPage = () => {
                 password: formData.password,
             });
 
+            if (autoLoginResponse?.token) {
+                localStorage.setItem('accessToken', autoLoginResponse.token);
+            }
             if (autoLoginResponse?.account) {
                 persistSession(autoLoginResponse.account);
             }

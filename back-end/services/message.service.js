@@ -34,7 +34,13 @@ export default class messageService {
                 content
             }));
 
-            return { success: true, chatBoxId: resolvedChatBoxId, chatBox: chatBoxPayload, message };
+            const memberIds = await this.chatBoxService.chatBoxDao.getMemberIds(resolvedChatBoxId);
+            const memberSummaries = {};
+            for (const memberId of memberIds) {
+                memberSummaries[memberId] = await this.chatBoxService.chatBoxDao.getChatBoxSummaryForUser(resolvedChatBoxId, memberId);
+            }
+
+            return { success: true, chatBoxId: resolvedChatBoxId, chatBox: chatBoxPayload, message, memberIds, memberSummaries };
         }catch (error) {
             return { success: false, message: "Error sending message: " + error.message };
         }

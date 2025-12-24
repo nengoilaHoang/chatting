@@ -10,7 +10,7 @@ export default class accountController {
     }
     setAccessTokenCookie = (res, account) => {
         if (!account?.id) {
-            return;
+            return null;
         }
 
         const payload = { id: account.id, email: account.email, displayName: account.displayName };
@@ -21,6 +21,7 @@ export default class accountController {
             sameSite: 'strict',
             maxAge: 24 * 60 * 60 * 1000
         });
+        return accessToken;
     }
     registerAccount = async (req, res) => {
         const {email, password, displayName} = req.body;
@@ -28,8 +29,8 @@ export default class accountController {
             const account = new accountModel({email, password, displayName});
             const result = await this.accountService.registerAccount(account);
             if (result.success) {
-                this.setAccessTokenCookie(res, result.account);
-                res.status(201).json(result);
+                const token = this.setAccessTokenCookie(res, result.account);
+                res.status(201).json({ ...result, token });
             } else {
                 res.status(400).json(result);
             }
@@ -42,8 +43,8 @@ export default class accountController {
         try {
             const result = await this.accountService.loginAccount(email, password);
             if (result.success) {
-                this.setAccessTokenCookie(res, result.account);
-                res.status(200).json(result);
+                const token = this.setAccessTokenCookie(res, result.account);
+                res.status(200).json({ ...result, token });
             } else {
                 res.status(400).json(result);
             }

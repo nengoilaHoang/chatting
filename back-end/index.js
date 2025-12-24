@@ -5,6 +5,7 @@ import { Server } from 'socket.io';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import jwt from 'jsonwebtoken';
 dotenv.config();
 
 const app = express();
@@ -54,9 +55,43 @@ const io = new Server(server, {
     credentials: true,
   }
 });
+app.set('io', io);
+
+io.use((socket, next) => {
+  const token = socket.handshake.auth?.token;
+  if (!token) {
+    return next(new Error('Authentication error'));
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    socket.data.user = decoded;
+    return next();
+  } catch (error) {
+    return next(new Error('Authentication error'));
+  }
+});
 
 io.on('connection', (socket) => {
-    console.log('User connected:', socket.id);
+  const userId = socket.data.user?.id;
+  if (userId) {
+    socket.join(`user:${userId}`);
+  }
+
+  socket.on('join_chat', (chatBoxId) => {
+    if (chatBoxId) {
+      socket.join(`chat:${chatBoxId}`);
+    }
+  });
+
+  socket.on('leave_chat', (chatBoxId) => {
+    if (chatBoxId) {
+      socket.leave(`chat:${chatBoxId}`);
+    }
+  });
+
+  socket.on('disconnect', () => {
+    // Optional: track disconnects
+  });
 });
 
 // routes
@@ -65,6 +100,6 @@ app.get('/', (req, res) => {
 });
 
 // Chạy server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server đang chạy tại: http://localhost:${PORT}`);
 });

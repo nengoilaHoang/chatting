@@ -1,9 +1,21 @@
+import { useEffect } from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import './mainLayout.css';
 import { authService } from '../../services/authService';
+import socketService from '../../services/socketService';
 
 export default function MainLayout() {
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+            socketService.connect(token);
+        }
+        return () => {
+            socketService.disconnect();
+        };
+    }, []);
 
     const displayName = (() => {
         if (typeof window === 'undefined') {
@@ -43,6 +55,7 @@ export default function MainLayout() {
             }
 
             navigate('/login', { replace: true });
+            socketService.disconnect();
         }
     };
 
