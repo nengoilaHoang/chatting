@@ -1,8 +1,26 @@
 export default class chatBoxModel {
-    constructor({ id, name, type, createdAt, updatedAt }) {
+    constructor({
+        id,
+        name,
+        type,
+        avatar,
+        partnerId,
+        partnerEmail,
+        partnerDisplayName,
+        partnerAvatar,
+        memberIds,
+        createdAt,
+        updatedAt,
+    }) {
         this.id = id;
         this.name = name;
         this.type = type;
+        this.avatar = avatar ?? partnerAvatar ?? null;
+        this.partnerId = partnerId ?? null;
+        this.partnerEmail = partnerEmail ?? null;
+        this.partnerDisplayName = partnerDisplayName ?? null;
+        this.partnerAvatar = partnerAvatar ?? null;
+        this.memberIds = memberIds ?? [];
         this.createdAt = this.formatDate(createdAt);
         this.updatedAt = this.formatDate(updatedAt);
     }

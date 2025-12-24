@@ -6,10 +6,14 @@ export default class chatBoxController {
     }
     chatNewAccount = async (req, res) => {
         const { senderId, receiverId } = req.body;
+        if (!senderId || !receiverId) {
+            return res.status(400).json({ success: false, message: "senderId and receiverId are required" });
+        }
         try {
             const result = await this.chatBoxService.chatNewAccount(senderId, receiverId);
             if (result.success) {
-                res.status(201).json(result);
+                const statusCode = result.createdNew ? 201 : 200;
+                res.status(statusCode).json(result);
             } else {
                 res.status(400).json(result);
             }
@@ -31,7 +35,10 @@ export default class chatBoxController {
         }
     }
     getAllChatBox = async (req, res) => {
-        const {userId} = req.body;
+        const { userId } = req.query;
+        if (!userId) {
+            return res.status(400).json({ success: false, message: "userId is required" });
+        }
         try {
             const result = await this.chatBoxService.getAllChatBox(userId);
             if (result.success) {

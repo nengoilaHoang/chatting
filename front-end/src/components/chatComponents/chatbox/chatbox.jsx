@@ -7,7 +7,8 @@ const ChatBoxItem = ({
     lastMessage, 
     unreadCount, 
     isActive, 
-    onClick 
+    onClick,
+    updatedAt
 }) => {
     return (
         <div 
@@ -36,8 +37,7 @@ const ChatBoxItem = ({
 
             {/* Phần Thông báo (Badge) */}
             <div className="c-chatbox-meta">
-                {/* Thời gian giả lập, sau này truyền props vào */}
-                <span className="c-chatbox-time">12:30</span>
+                <span className="c-chatbox-time">{updatedAt || ''}</span>
                 
                 {unreadCount > 0 && (
                     <div className="c-chatbox-badge">

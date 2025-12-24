@@ -9,5 +9,6 @@ export default class messageRoute {
     }
     configureRoutes() {
         this.router.post("/send", this.messageController.sendMessage);
+        this.router.get("/:chatBoxId", this.messageController.getMessages);
     }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import './user.css';
 
-const UserItem = ({ avatar, displayName, onClick, isOnline }) => {
+const UserItem = ({ avatar, displayName, onClick, isOnline, subtitle }) => {
     return (
         <div className="c-user-wrapper" onClick={onClick}>
             {/* Avatar */}
@@ -18,7 +18,7 @@ const UserItem = ({ avatar, displayName, onClick, isOnline }) => {
                 <h4 className="c-user-name">{displayName}</h4>
                 {/* Trạng thái text */}
                 <span className={`c-user-status ${isOnline ? 'online' : ''}`}>
-                    {isOnline ? 'Đang hoạt động' : 'Ngoại tuyến'}
+                    {subtitle || (isOnline ? 'Đang hoạt động' : 'Ngoại tuyến')}
                 </span>
             </div>
 
