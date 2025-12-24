@@ -7,14 +7,32 @@ import RegisterPage from './pages/register/register';
 import MainLayout from './layouts/mainLayout/mainLayout';
 import ChattingPage from './pages/chatting/chatting';
 import AdminLoginPage from './pages/adminLogin/adminLogin';
+import AdminLayout from './layouts/adminLayout/adminLayout';
+import AdminDashboardPage from './pages/dashBoard/dashBoard';
 
 const ProfilePage = () => <h2>Thông tin cá nhân</h2>;
 const NotFoundPage = () => <h2>404 - Không tìm thấy trang</h2>;
 
-const ProtectedRoute = () => {
-  const token = localStorage.getItem('accessToken');
-  if (!token) {
-    return <Navigate to="/login" replace />;
+const hasUserSession = () => {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
+  return Boolean(localStorage.getItem('userProfile'));
+};
+
+const hasAdminSession = () => {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
+  return Boolean(localStorage.getItem('adminProfile'));
+};
+
+const ProtectedRoute = ({ guard, redirectTo = '/login' }) => {
+  const isAllowed = typeof guard === 'function' ? guard() : Boolean(guard);
+  if (!isAllowed) {
+    return <Navigate to={redirectTo} replace />;
   }
   return <Outlet />;
 };
@@ -30,13 +48,16 @@ function App() {
           <Route path="/admin/login" element={<AdminLoginPage />} />
         </Route>
 
-        <Route element={<MainLayout />}>
-          <Route path="/chatting" element={<ChattingPage />} /> 
+        <Route element={<ProtectedRoute guard={hasUserSession} redirectTo="/login" />}>
+          <Route element={<MainLayout />}>
+            <Route path="/chatting" element={<ChattingPage />} /> 
+            <Route path="/profile" element={<ProfilePage />} />
+          </Route>
         </Route>
 
-        <Route element={<ProtectedRoute />}>
-          <Route element={<MainLayout />}>
-            <Route path="/profile" element={<ProfilePage />} />
+        <Route element={<ProtectedRoute guard={hasAdminSession} redirectTo="/admin/login" />}>
+          <Route element={<AdminLayout />}>
+            <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
           </Route>
         </Route>
 

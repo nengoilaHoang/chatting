@@ -23,7 +23,7 @@ const LoginPage = () => {
                     localStorage.setItem('displayName', data.account.displayName ?? data.account.email);
                 }
             }
-            navigate('/');
+            navigate('/chatting', { replace: true });
         } catch (error) {
             setError(error.message ?? 'Đăng nhập thất bại. Vui lòng thử lại.');
         } finally {

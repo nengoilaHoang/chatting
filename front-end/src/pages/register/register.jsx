@@ -5,7 +5,7 @@ import { authService } from '../../services/authService';
 
 const RegisterPage = () => {
     const navigate = useNavigate();
-    
+
     // State quản lý form
     const [formData, setFormData] = useState({
         displayName: '',
@@ -24,6 +24,18 @@ const RegisterPage = () => {
         });
         // Xóa lỗi khi người dùng bắt đầu sửa
         if (error) setError('');
+    };
+
+    const persistSession = (account) => {
+        if (!account || typeof window === 'undefined') {
+            return;
+        }
+
+        localStorage.setItem('userProfile', JSON.stringify(account));
+        const fallbackName = account.displayName ?? account.email ?? account.fullName;
+        if (fallbackName) {
+            localStorage.setItem('displayName', fallbackName);
+        }
     };
 
     const handleRegister = async (e) => {
@@ -50,8 +62,16 @@ const RegisterPage = () => {
                 password: formData.password,
             });
 
-            alert("Đăng ký thành công! Hãy đăng nhập.");
-            navigate('/login'); 
+            const autoLoginResponse = await authService.login({
+                email: formData.email,
+                password: formData.password,
+            });
+
+            if (autoLoginResponse?.account) {
+                persistSession(autoLoginResponse.account);
+            }
+
+            navigate('/chatting', { replace: true }); 
         } catch (err) {
             setError(err.message ?? "Đăng ký thất bại. Vui lòng thử lại.");
         } finally {

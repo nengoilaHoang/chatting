@@ -1,0 +1,138 @@
+/* Container bao quanh */
+.l-admin-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* --- NAVBAR STYLES --- */
+.l-admin-navbar {
+    background-color: var(--white);
+    height: 64px;
+    display: flex;
+    justify-content: center;
+    box-shadow: var(--shadow-soft);
+    position: sticky; /* Ghim lên đầu trang */
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.l-admin-navbar-inner {
+    width: 100%;
+    max-width: 1400px; /* Rộng rãi để hiển thị Dashboard */
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Logo Area */
+.l-admin-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--text-main);
+    transition: opacity 0.2s;
+}
+
+.l-admin-logo:hover {
+    opacity: 0.8;
+}
+
+.l-admin-logo-icon {
+    width: 36px;
+    height: 36px;
+    background-color: rgba(0, 122, 255, 0.1);
+    color: var(--primary-color);
+    border-radius: 8px; /* Bo góc vuông vức hơn User App */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.l-admin-logo-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.l-admin-brand {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.l-admin-brand-name {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-main);
+}
+
+.l-admin-badge {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+/* Logout Button */
+.l-admin-logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.l-admin-logout-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.l-admin-logout-btn:hover {
+    background-color: #FFF2F2; /* Nền đỏ rất nhạt */
+    color: #D93025;            /* Chữ đỏ cảnh báo */
+    border-color: rgba(217, 48, 37, 0.3);
+}
+
+/* --- CONTENT AREA --- */
+.l-admin-content {
+    flex: 1; /* Đẩy footer xuống đáy */
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 30px 24px;
+    /* Đây là nơi các trang Dashboard sẽ hiển thị */
+}
+
+/* --- FOOTER --- */
+.l-admin-footer {
+    text-align: center;
+    padding: 20px;
+    background-color: var(--bg-color);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    border-top: 1px solid rgba(0,0,0,0.03);
+}
+
+/* Mobile Responsive */
+@media (max-width: 600px) {
+    .l-admin-logout-text {
+        display: none; /* Ẩn chữ 'Đăng xuất' trên mobile, chỉ hiện icon */
+    }
+    
+    .l-admin-logout-btn {
+        padding: 8px;
+    }
+}
