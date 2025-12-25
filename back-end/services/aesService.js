@@ -56,18 +56,11 @@ const aesService = {
             }
 
             // 2. Xử lý
-            const aesKey = aesKeyMgr.getAesKey(keyHex);
-            console.log(`🔑 [DECRYPT] userId: ${keyHex}, có AES key: ${aesKey ? 'CÓ' : 'KHÔNG'}`);
-            if (!aesKey) {
-                console.error(`❌ Không tìm thấy AES key cho userId: ${keyHex}`);
-                return null;
-            }
-            const key = Buffer.from(aesKey, 'hex');
+            const key = Buffer.from(aesKeyMgr.getAesKey(keyHex), 'hex');
             const decipher = crypto.createDecipheriv(ALGORITHM, key, null);
 
             let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
             decrypted += decipher.final('utf8');
-            console.log(`✅ [DECRYPT] Giải mã thành công: ${encryptedText.substring(0, 20)}... → ${decrypted}`);
             
             return decrypted;
         } catch (error) {

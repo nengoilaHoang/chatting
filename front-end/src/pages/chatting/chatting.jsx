@@ -330,14 +330,18 @@ const ChatPage = () => {
         setIsSendingMessage(true);
         setMessagesError('');
         try {
+            const encryptedContent = aesService.encrypt(trimmed);
+            console.log('🔐 [FE] Content trước mã hóa:', trimmed);
+            console.log('🔐 [FE] Content sau mã hóa:', encryptedContent);
             const payload = {
                 chatBoxId: selectedChat.id,
                 senderId: currentUser.id,
-                content: aesService.encrypt(trimmed),
+                content: encryptedContent,
             };
             if (selectedChat.type === 'private' && selectedChat.partnerId) {
                 payload.receiverId = selectedChat.partnerId;
             }
+            console.log('📤 [FE] Payload gửi lên:', payload);
 
             const data = await messageService.sendMessage(payload);
             let activeChat = selectedChat;

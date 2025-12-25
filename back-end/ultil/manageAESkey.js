@@ -19,9 +19,6 @@ class aesKeyManager {
         const key = this.aesKeys.get(userId);
         return key ? key.aesKey : null;
     }
-    hasAesKey(userId) {
-        return this.aesKeys.has(userId);
-    }
     removeAesKey(userId) {
         this.aesKeys.delete(userId);
     }
