@@ -42,7 +42,7 @@ export default class messageController {
         const { chatBoxId } = req.params;
         const { limit, offset } = req.query;
         try {
-            const result = await this.messageService.getMessages(chatBoxId, Number(limit) || 50, Number(offset) || 0);
+            const result = await this.messageService.getMessages(chatBoxId, Number(limit) || 50, Number(offset) || 0, res.locals.userId);
             if (!result.success) {
                 return res.status(400).json(result);
             }

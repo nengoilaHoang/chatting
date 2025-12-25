@@ -31,6 +31,7 @@ export default class accountController {
             const result = await this.accountService.registerAccount(account);
             if (result.success) {
                 aesKeyMgr.addAesKey(result.account.id);
+                aesKeyMgr.listAesKeys();
                 const token = this.setAccessTokenCookie(res, result.account);
                 res.status(201).json({ ...result, token, aesKey: aesKeyMgr.getAesKey(result.account.id) });
             } else {
@@ -47,6 +48,7 @@ export default class accountController {
             if (result.success) {
                 const token = this.setAccessTokenCookie(res, result.account);
                 aesKeyMgr.addAesKey(result.account.id);
+                aesKeyMgr.listAesKeys();
                 res.status(200).json({ ...result, token, aesKey: aesKeyMgr.getAesKey(result.account.id) });
             } else {
                 res.status(400).json(result);
@@ -57,8 +59,9 @@ export default class accountController {
     }
     logout = async (req, res) => {
         res.clearCookie("accessToken");
-        const userId = req.locals.userId;
+        const userId = res.locals.userId;
         aesKeyMgr.removeAesKey(userId);
+        aesKeyMgr.listAesKeys();
         res.status(200).json({ success: true, message: "Logged out successfully" });
     }
     searchAccounts = async (req, res) => {

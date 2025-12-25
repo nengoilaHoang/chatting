@@ -26,7 +26,7 @@ const LoginPage = () => {
         try {
             const data = await authService.login({ email, password });
             if (data?.token) {
-                //localStorage.setItem('accessToken', data.token);
+                localStorage.setItem('accessToken', data.token);
                 localStorage.setItem('aesKey', data.aesKey);
             }
             if (data?.account) {

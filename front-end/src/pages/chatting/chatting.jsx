@@ -7,6 +7,7 @@ import { accountService } from '../../services/accountService';
 import { chatBoxService } from '../../services/chatBoxService';
 import { messageService } from '../../services/messageService';
 import socketService from '../../services/socketService';
+import aesService from '../../services/aesService';
 
 const MIN_SEARCH_LENGTH = 2;
 const SEARCH_DELAY = 500;
@@ -332,7 +333,7 @@ const ChatPage = () => {
             const payload = {
                 chatBoxId: selectedChat.id,
                 senderId: currentUser.id,
-                content: trimmed,
+                content: aesService.encrypt(trimmed),
             };
             if (selectedChat.type === 'private' && selectedChat.partnerId) {
                 payload.receiverId = selectedChat.partnerId;

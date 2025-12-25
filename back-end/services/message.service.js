@@ -46,13 +46,13 @@ export default class messageService {
         }
     }
 
-    async getMessages(chatBoxId, limit = 20, offset = 0) {
+    async getMessages(chatBoxId, limit = 20, offset = 0, userId) {
         if (!chatBoxId) {
             return { success: false, message: "chatBoxId is required" };
         }
 
         try {
-            const messages = await this.messageDao.getMessagesByChatBoxId(chatBoxId, limit, offset);
+            const messages = await this.messageDao.getMessagesByChatBoxId(chatBoxId, limit, offset, userId);
             return { success: true, messages };
         } catch (error) {
             return { success: false, message: "Error retrieving messages: " + error.message };

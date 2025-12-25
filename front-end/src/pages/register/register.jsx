@@ -76,7 +76,7 @@ const RegisterPage = () => {
             });
 
             if (autoLoginResponse?.token) {
-                //localStorage.setItem('accessToken', autoLoginResponse.token);
+                localStorage.setItem('accessToken', autoLoginResponse.token);
                 localStorage.setItem('aesKey', autoLoginResponse.aesKey);
             }
             if (autoLoginResponse?.account) {
