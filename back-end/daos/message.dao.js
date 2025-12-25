@@ -34,8 +34,8 @@ export default class messageDao {
             id: messageData.id,
             chatBoxId: messageData.chat_box_id,
             senderId: messageData.sender_id,
-            content: messageData.content,
-            //content: aesService.encrypt(messageData.content, userId),
+            //content: messageData.content,
+            content: aesService.encrypt(messageData.content, userId),
             createdAt: messageData.created_at
         }));
     }

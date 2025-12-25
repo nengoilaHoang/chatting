@@ -229,7 +229,7 @@ const ChatPage = () => {
                 id: msg.id,
                 chatBoxId: msg.chatBoxId,
                 senderId: msg.senderId,
-                content: msg.content,
+                content: aesService.decrypt(msg.content, msg.senderId),
                 createdAt: msg.createdAt,
             }));
             setMessagesByChatId((prev) => ({
