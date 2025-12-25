@@ -1,7 +1,31 @@
-import { Outlet, Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Outlet, Link, useNavigate } from 'react-router-dom';
 import './authLayout.css';
+import MainLayout from '../mainLayout/mainLayout';
 
 export default function AuthLayout() {
+    const navigate = useNavigate();
+
+    // Kiểm tra nếu đã đăng nhập thì chuyển về trang chính
+    useEffect(() => {
+        const userProfile = localStorage.getItem('userProfile');
+        const adminProfile = localStorage.getItem('adminProfile');
+        
+        if (userProfile) {
+            navigate('/chatting', { replace: true });
+        } else if (adminProfile) {
+            navigate('/admin/dashboard', { replace: true });
+        }
+    }, [navigate]);
+
+    // Nếu đã đăng nhập, render MainLayout thay vì AuthLayout
+    const userProfile = localStorage.getItem('userProfile');
+    const adminProfile = localStorage.getItem('adminProfile');
+    
+    if (userProfile || adminProfile) {
+        return <MainLayout />;
+    }
+
     return (
         <div className="authlayout-container">
             {/* --- HEADER --- */}

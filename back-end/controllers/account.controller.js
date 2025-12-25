@@ -2,6 +2,7 @@ import accountService from "../services/account.service.js";
 import accountModel from "../models/account.model.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import {aesKeyMgr} from "../ultil/manageAESkey.js";
 dotenv.config();
 
 export default class accountController {
@@ -29,8 +30,9 @@ export default class accountController {
             const account = new accountModel({email, password, displayName});
             const result = await this.accountService.registerAccount(account);
             if (result.success) {
+                aesKeyMgr.addAesKey(result.account.id);
                 const token = this.setAccessTokenCookie(res, result.account);
-                res.status(201).json({ ...result, token });
+                res.status(201).json({ ...result, token, aesKey: aesKeyMgr.getAesKey(result.account.id) });
             } else {
                 res.status(400).json(result);
             }
@@ -44,7 +46,8 @@ export default class accountController {
             const result = await this.accountService.loginAccount(email, password);
             if (result.success) {
                 const token = this.setAccessTokenCookie(res, result.account);
-                res.status(200).json({ ...result, token });
+                aesKeyMgr.addAesKey(result.account.id);
+                res.status(200).json({ ...result, token, aesKey: aesKeyMgr.getAesKey(result.account.id) });
             } else {
                 res.status(400).json(result);
             }
@@ -54,6 +57,8 @@ export default class accountController {
     }
     logout = async (req, res) => {
         res.clearCookie("accessToken");
+        const userId = req.locals.userId;
+        aesKeyMgr.removeAesKey(userId);
         res.status(200).json({ success: true, message: "Logged out successfully" });
     }
     searchAccounts = async (req, res) => {

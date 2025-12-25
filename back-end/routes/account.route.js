@@ -1,5 +1,6 @@
 import express from 'express';
 import accountController from '../controllers/account.controller.js';
+import authenticate from '../middlewares/authenticate.js';
 
 export default class accountRoute {
     constructor(){
@@ -10,7 +11,7 @@ export default class accountRoute {
     configureRoutes() {
         this.router.post('/register', this.accountController.registerAccount);
         this.router.post('/login', this.accountController.loginAccount);
-        this.router.post('/logout', this.accountController.logout);
+        this.router.post('/logout', authenticate, this.accountController.logout);
         this.router.get('/search', this.accountController.searchAccounts);
     }
 }

@@ -48,7 +48,7 @@ export default function MainLayout() {
             console.warn('Logout request failed', error);
         } finally {
             if (typeof window !== 'undefined') {
-                ['accessToken', 'refreshToken', 'userProfile', 'displayName'].forEach((key) => {
+                ['accessToken', 'refreshToken', 'userProfile', 'displayName', 'aesKey'].forEach((key) => {
                     localStorage.removeItem(key);
                     sessionStorage.removeItem(key);
                 });

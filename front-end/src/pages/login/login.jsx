@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './login.css';
 import { authService } from '../../services/authService';
@@ -10,6 +10,14 @@ const LoginPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
 
+    // Kiểm tra nếu đã đăng nhập thì redirect về home
+    useEffect(() => {
+        const userProfile = localStorage.getItem('userProfile');
+        if (userProfile) {
+            navigate('/', { replace: true });
+        }
+    }, [navigate]);
+
     const handleLogin = async (e) => {
         e.preventDefault();
         setIsLoading(true);
@@ -18,7 +26,8 @@ const LoginPage = () => {
         try {
             const data = await authService.login({ email, password });
             if (data?.token) {
-                localStorage.setItem('accessToken', data.token);
+                //localStorage.setItem('accessToken', data.token);
+                localStorage.setItem('aesKey', data.aesKey);
             }
             if (data?.account) {
                 localStorage.setItem('userProfile', JSON.stringify(data.account));

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './adminLogin.css';
 import { authService } from '../../services/authService';
@@ -8,6 +8,14 @@ const AdminLoginPage = () => {
     const [credentials, setCredentials] = useState({ email: '', password: '' });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+
+    // Kiểm tra nếu admin đã đăng nhập thì redirect về dashboard
+    useEffect(() => {
+        const adminProfile = localStorage.getItem('adminProfile');
+        if (adminProfile) {
+            navigate('/admin/dashboard', { replace: true });
+        }
+    }, [navigate]);
 
     const handleChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });

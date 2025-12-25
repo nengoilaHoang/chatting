@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './register.css';
 import { authService } from '../../services/authService';
@@ -16,6 +16,14 @@ const RegisterPage = () => {
     
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+
+    // Kiểm tra nếu đã đăng nhập thì redirect về home
+    useEffect(() => {
+        const userProfile = localStorage.getItem('userProfile');
+        if (userProfile) {
+            navigate('/', { replace: true });
+        }
+    }, [navigate]);
 
     const handleChange = (e) => {
         setFormData({
@@ -68,7 +76,8 @@ const RegisterPage = () => {
             });
 
             if (autoLoginResponse?.token) {
-                localStorage.setItem('accessToken', autoLoginResponse.token);
+                //localStorage.setItem('accessToken', autoLoginResponse.token);
+                localStorage.setItem('aesKey', autoLoginResponse.aesKey);
             }
             if (autoLoginResponse?.account) {
                 persistSession(autoLoginResponse.account);
